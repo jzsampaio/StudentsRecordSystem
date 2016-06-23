@@ -1,0 +1,50 @@
+ID001 024312 Leonardo                34    G         AB
+ID019 031272 Andreza                 34    G         AB
+ID002 035830 Rogerio                 34    G         AX
+ID004 041881 Ana Luisa               34    G         AX
+ID007 042290 Bruno                   34    G         AX
+ID013 042780 Daniel                  34    G         AX
+ID018 042865 Danilo                  34    G         AX
+ID003 043217 Erika                   34    G         AX
+ID008 043341 Fabricio                34    G         AX
+ID014 044072 Igor                    34    G         AX
+ID006 045058 Marcio                  34    G         AX
+ID015 046306 Rodrigo                 34    G         AX
+ID016 046708 Thiago                  34    G         AX
+ID005 046713 Tiago                   34    G         AX
+ID009 046802 Tiago                   34    G         AX
+ID010 046944 Vitor                   34    G         AX
+ID011 046946 Vitor                   34    G         AX
+ID012 046956 Vitor                   34    G         AX
+ID017 046961 Paulo                   34    G         AX
+ID020 046713 Lisa                    34    G         AX
+ID021 036802 Clarice                 34    G         AC
+ID024 046344 Lucas                   34    G         AC
+ID022 041116 Ana Paula               34    G         AX
+ID025 042356 Carlos                  34    G         AX
+ID023 045531 Alberto                 34    A         AX
+ID026 024312 Leonardo                34    A         AB
+ID027 031272 Andreza                 34    A         AB
+ID028 035830 Rogerio                 34    A         AX
+ID029 041881 Ana Luisa               34    A         AX
+ID030 042290 Bruno                   34    A         AX
+ID031 042780 Daniel                  34    A         AX
+ID032 042865 Danilo                  34    A         AX
+ID034 043341 Fabricio                34    A         AX
+ID035 044072 Igor                    34    A         AX
+ID036 045058 Marcio                  34    A         AX
+ID037 046306 Rodrigo                 34    A         AX
+ID038 046708 Thiago                  34    A         AX
+ID039 046713 Tiago                   34    A         AX
+ID040 046802 Tiago                   34    A         AX
+ID041 046944 Vitor                   34    A         AX
+ID042 046946 Vitor                   34    A         AX
+ID043 046956 Vitor                   34    A         AX
+ID044 046961 Paulo                   34    A         AX
+ID045 046713 Lisa                    34    A         AX
+ID046 036802 Clarice                 34    A         AC
+ID047 046344 Lucas                   34    A         AC
+ID048 041116 Ana Paula               34    A         AX
+ID049 042356 Carlos                  34    A         AX
+ID050 045531 Alberto                 34    A         AX
+ID058 025538 Nolberto                32    H         AZ
