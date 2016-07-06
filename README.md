@@ -31,6 +31,15 @@ relatório do sistema deve agregar esses dados de forma co-sequencial.
 O sistema deve permitir operações de adição, remoção e busca sobre os
 dados.
 
+#### Sobre o Código
+
+O código deve acessar o arquivo de dados registro a registro sem nunca carregar o arquivo inteiro em memória.
+
+Assume-se que todos os indexes gerados cabem inteiramente na memória. Quando o index está em memória ele é 
+carregado em um map<string, int> para fácil manipulação. Alterações no index em memória devem ser persistidas
+em alterações no index em disco.
+
+
 #### Instruções para Compilação
 
 ##### Estrutura assumida do projeto

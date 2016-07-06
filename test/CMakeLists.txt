@@ -1,0 +1,1 @@
+add_executable(testJIndexUtil testJIndexUtil.cpp ../src/jIndexUtil.cpp ../src/StudentRecord.cpp)
