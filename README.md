@@ -81,3 +81,45 @@ notar que projectDir é o diretório contendo este arquivo README.md
 
 #### Instruções para Execução
 
+#### Sobre a construção
+
+Os seguintes arquivos são criados por gera_index:
+
+* index_lista1.txt
+* sec_lista1.txt
+* index_lista2.txt
+* index_lista3.txt
+
+Os últimos dois arquivos são indexes da seguinte forma:
+
+  chave primária -> linha no arquivo de dados correspondente onde se encontra o registro
+   correspondente a essa chave primária.
+   
+O segundo arquivo é um índice secundário. Para cada nome existente no conjunto de dados, ele
+mantém contém o número da linha do arquivo de índice primário onde você encontrará uma entrada
+no índice primário referente a uma chave primária com aquele nome. Essa entrada no índice 
+primário(primeiro arquivo da lista) contém os seguintes campos:
+Chave primária, linha no arquivo de dados correspondente onde se encontra o registro 
+com essa chave primária, linha deste arquivo de índice primário onde se encontra a próxima 
+entrada do índice com a chave primária de uma registro que tem o mesmo nome que este.
+
+Tudo isso para dizer que: utiliza-se uma lista ligada para implementar o índice secundário
+para nome. O primeiro usuário com um certo nome pode ser lido do arquivo sec_lista2.txt. 
+A lista ligada em si está na terceira coluna do arquivo index_lista1.txt.
+
+Inicialmente esse trabalho utilizava o endereço (em bytes) do registro correspondente a uma
+chave primária. Apesar se facilitar para o computador, dificultava debugar o código. 
+Utilizando-se linha o usuário(programador) pode verificar se a lista invertida está correta
+por inspeção visual. Por conta disso, é preciso que ao carregar o índice em memória seja feita 
+uma passada pelo arquivo de dados para criar um mapa entre o índice da linha e o byte em
+que ele se encontra no arquivo de dados.
+
+Nota: o arquivo secundário contém uma informação para a posição relativa dentro do índice 
+primário onde encontrar o primeiro registro com um dado nome. Como o índice primário 
+index_lista 1 contém o número de registros deletados na primeira linha, para obter a
+linha real em que o registro se encontra deve-se somar 2 ao número que aparece no índice 
+secundário.(+1 por conta da linha dedicada ao contador + 1 pq começamos a contar com 0 dentro
+do código, mas editores de texto começam a contar de 1).
+
+Para mapear a informação dos índices primários linha do arquivo de dados correspondente
+basta somar 1(pq contamos a partir de zero e editores de texto a partir de 1).

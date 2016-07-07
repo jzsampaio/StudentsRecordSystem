@@ -1,2 +1,2 @@
 add_executable(gera_index gera_index.cpp CreateIndexTools.h CreateIndexTools.cpp jIndexUtil.cpp jIndexUtil.h StudentRecord.cpp StudentRecord.h)
-add_executable(UnB_system UnB_system.cpp jIndexUtil.cpp jIndexUtil.h StudentRecord.cpp StudentRecord.h)
+add_executable(UnB_system UnB_system.cpp jIndexUtil.cpp jIndexUtil.h StudentRecord.cpp StudentRecord.h StudentRecordsHandler.cpp StudentRecordsHandler.h CreateIndexTools.cpp CreateIndexTools.h)

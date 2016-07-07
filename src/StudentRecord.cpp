@@ -9,10 +9,11 @@ int StudentRecord::QTD_FIELDS = 6;
 int StudentRecord::lengthOfField[6] = {5, 6, 23, 5, 9, 2};
 TypeOfField StudentRecord::typeOfField[6] = {STRING, INT, STRING, INT, STRING, STRING};
 
-void StudentRecordUtil::writeRecord(ofstream &fout, const StudentRecord &record, int pos) {
+void StudentRecordUtil::writeRecord(fstream &fout, const StudentRecord &record, int pos) {
 
+    fout.seekg(fout.tellg(), ios_base::beg);
     if (!fout.is_open()) {
-        cerr << "output stream is not opened!" << endl;
+        cerr << "output stream is not ok!" << endl;
         return;
     }
 
@@ -33,11 +34,12 @@ void StudentRecordUtil::writeRecord(ofstream &fout, const StudentRecord &record,
     fout.flags(f);
 
     fout << endl;
+    flush(fout);
 
 
 }
 
-StudentRecord StudentRecordUtil::readRecord(ifstream &fin) {
+StudentRecord StudentRecordUtil::readRecord(istream &fin) {
     StudentRecord out;
 //
 //    for (int i = 0; i < StudentRecord::QTD_FIELDS; i++) {

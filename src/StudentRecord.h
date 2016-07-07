@@ -47,9 +47,9 @@ public:
     /**
      * if pos >= 0, moves stream position to 'pos' before writing.
      */
-    static void writeRecord(ofstream &fout, const StudentRecord &record, int pos=-1);
+    static void writeRecord(fstream &fout, const StudentRecord &record, int pos = -1);
 
-    static StudentRecord readRecord(ifstream &fin);
+    static StudentRecord readRecord(istream &fin);
 };
 
 

@@ -46,6 +46,7 @@ vector<tuple<string, int, string>> readFixedLengthFieldFile(string filename) {
 
         // only the first field(the primary key) matters for us right now
         stringStream >> primaryKey >> numberIdontCare;
+        stringStream.get();
 
         stringStream.read(nameBuffer, 23);
 
@@ -132,8 +133,6 @@ vector<pair<string, int>> sortIndex(vector<pair<string, int>> unsortedEntries) {
 
 
 /**
- * To be used with the vector<tuple<string, int, string>> built for lista1.txt
- *
  * returns two things:
  * a) a vector of tuple<string, int, int> sorted according to the fist string (supposed the primary key)
  * the first int is the address of the byte where to locate the record inside lista1.txt. The second is the index of
@@ -203,7 +202,7 @@ pair<PrimaryIndex, SecondaryIndex> createPrimaryAndSecondaryIndex(
         //the first item we read is made the last of the queue
         namePrimaryIndexIdxNext[name].push_back(-1);
         for (int i = 1; i < keysWithThisName.size(); i++) {
-            namePrimaryIndexIdxNext[name].push_back(namePrimaryIndexIdx[name][i-1]);
+            namePrimaryIndexIdxNext[name].push_back(namePrimaryIndexIdx[name][i - 1]);
         }
 
 
@@ -311,7 +310,7 @@ void writeIndexToFile(PrimaryIndex index, string fileName, bool printQtdRemoved,
 
 void writeSecondaryIndexToFile(SecondaryIndex index, string fileName) {
 
-    ofstream f(fileName);
+    ofstream f(fileName, ios::out | ios::trunc);
 
     if (!f.is_open()) {
         cerr << "Cannot open file:" << fileName << " for writting index!" << endl;
@@ -319,7 +318,7 @@ void writeSecondaryIndexToFile(SecondaryIndex index, string fileName) {
     }
 
     for (auto entry : index) {
-        f << get<0>(entry) << "\t" << get<1>(entry) << "\t" << endl;
+        f << get<0>(entry) << "\t" << get<1>(entry) << endl;
     }
 
     f.close();
@@ -379,6 +378,107 @@ map<string, int> loadIndex(string file) {
 
 }
 
-vector<pair<string, int>> buildSecondaryIndexForFixedLengthFieldsFile(string filename) {
-    return std::vector<pair<std::string, int>>();
+StudentRecordPrimaryIndex loadStudentRecordPrimaryIndex(fstream &is, int *qtdDeleted) {
+    StudentRecordPrimaryIndex out;
+    string lineBuffer;
+    stringstream lineStream;
+    string primaryKey;
+    int lineAddrOnDataFile, lineAddrOfNext;
+    int qtdDel;
+
+
+    if (!is.is_open()) {
+        cerr << "Could not open file:" << is << " to load primary student records index from" << endl;
+        return out;
+    }
+    if (!is.good()) {
+        is.clear();
+        is.seekg(0);
+    }
+
+
+    getline(is, lineBuffer);
+    lineStream.str(lineBuffer);
+    lineStream >> qtdDel;
+    *qtdDeleted = qtdDel;
+
+    char primaryKeyBuffer[10];
+
+    while (getline(is, lineBuffer)) {
+        sscanf(lineBuffer.c_str(), "%s\t%d\t%d", primaryKeyBuffer, &lineAddrOnDataFile, &lineAddrOfNext);
+        primaryKey = string(primaryKeyBuffer);
+
+        if (out.find(primaryKey) != out.end()) {
+            cerr << "Error on index! Multiple definition of same key:" << primaryKey << "!" << endl;
+            cerr << flush;
+        }
+
+        out.insert(make_pair(primaryKey, make_tuple(lineAddrOnDataFile, lineAddrOfNext)));
+    }
+
+    return out;
+}
+
+StudentRecordSecondaryIndex loadStudentRecordSecondaryIndex(fstream &is) {
+    map<string, int> out;
+    string lineBuffer;
+    stringstream lineStream;
+    string key;
+    int addressOnDataFile;
+
+
+    if (!is.is_open()) {
+        cerr << "Could not open file:" << is << " to load secondary name index from" << endl;
+        return out;
+    }
+    if (!is.good()) {
+        is.clear();
+        is.seekg(0);
+    }
+
+    char nameBuffer[200];
+    while (getline(is, lineBuffer)) {
+        sscanf(lineBuffer.c_str(), "%23c\t%d", nameBuffer, &addressOnDataFile);
+        key = string(nameBuffer);
+
+        if (out.find(key) != out.end()) {
+            cerr << "Error on index! Multiple definition of same key:" << key << " while loading secondary index!" <<
+            endl;
+        }
+
+        out.insert(make_pair(key, addressOnDataFile));
+    }
+
+    return out;
+}
+
+ClassGradesIndex loadClassGrades(ifstream &is) {
+    map<string, int> out;
+    string lineBuffer;
+    stringstream lineStream;
+    string key;
+    int addressOnDataFile;
+
+
+    if (!is.is_open()) {
+        cerr << "Could not open file:" << is << " to load class grades index from" << endl;
+        return out;
+    }
+    if (!is.good()) {
+        is.clear();
+        is.seekg(0);
+    }
+
+    while (getline(is, lineBuffer)) {
+        lineStream.str(lineBuffer);
+        lineStream >> key >> addressOnDataFile;
+
+        if (out.find(key) != out.end()) {
+            cerr << "Error on index! Multiple definition of same key!" << endl;
+        }
+
+        out.insert(make_pair(key, addressOnDataFile));
+    }
+
+    return out;
 }

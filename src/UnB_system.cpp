@@ -3,6 +3,8 @@
 //
 
 #include<iostream>
+#include "jIndexUtil.h"
+#include "StudentRecordsHandler.h"
 
 using namespace std;
 
@@ -19,13 +21,27 @@ const string primaryIndexFile3 = "index_lista3.txt";
 const string secondaryIndexFile1 = "sec_lista1.txt";
 
 
-typedef struct StudentRecord StudentRecord;
-
 int main() {
 
     int option;
     bool shouldFinish;
-    string studentCode, studentName, studentAge,
+    string studentCode, studentName, studentAge;
+
+    LineMappedFile fileClassA(file2);
+    LineMappedFile fileClassB(file3);
+
+    LineMappedFile fileClassAPrimaryIndex(primaryIndexFile2);
+    LineMappedFile fileClassBPrimaryIndex(primaryIndexFile3);
+
+    StudentRecordsHandler studentRecords(file1, primaryIndexFile1, secondaryIndexFile1);
+
+    cout << "last key:" << findLastPrimaryKey(studentRecords.filePrimaryIndex) << endl;
+    cout << "next key:" << getNextPrimaryKey(findLastPrimaryKey(studentRecords.filePrimaryIndex)) << endl;
+
+    studentRecords.printPrimaryIndex();
+
+    studentRecords.printSecondaryIndex();
+
 
     while (!shouldFinish) {
 
@@ -35,7 +51,16 @@ int main() {
 
         switch (option) {
             case 1 :
-                cout << "Entre com numero magico associado ao luno:" << endl;
+                cout << "Entre com os dados do aluno: int, string, int , string, string :" << endl;
+                int d, d2;
+                string name, str1, str2;
+                cin >> d >> name >> d2 >> str1 >> str2;
+
+                name = name.substr(0, 23);
+                str1 = str1.substr(0, 9);
+                str2 = str2.substr(0, 2);
+
+                studentRecords.addStudent(d, name, d2, str1, str2);
                 break;
             case 2 :
                 break;
@@ -65,4 +90,5 @@ void printMenu() {
     cout << "5. Buscar" << endl;
     cout << "6. Sair" << endl;
 }
+
 

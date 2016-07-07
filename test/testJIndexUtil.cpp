@@ -36,14 +36,15 @@ int main() {
 
     const string testFileName = "writingTest.txt";
 
-    ofstream ofs(testFileName);
+    fstream ofs(testFileName);
     StudentRecord studentRecordA, studentRecordB;
 
     studentRecordA.set("ID001", 24312, "Leonardo", 34, "G", "AB");
     studentRecordB.set("ID019", 312272, "Andreza", 34, "G", "AB");
 
-    StudentRecordUtil::writeRecord(ofs, studentRecordA, 0);
-    StudentRecordUtil::writeRecord(ofs, studentRecordB, 0);
+    ofs.seekg(0, ios_base::end);
+    StudentRecordUtil::writeRecord(ofs, studentRecordA);
+    StudentRecordUtil::writeRecord(ofs, studentRecordB);
 
     ofs.close();
 

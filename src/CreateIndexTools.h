@@ -19,22 +19,19 @@ typedef tuple<string, int, string> RelevantForIndexConstructionUserData;
 typedef vector<tuple<string, int, int>> PrimaryIndex;
 typedef map<string, int> SecondaryIndex;
 /**
- * returns vector of entries <primaryKey, addr on file> where primary key is a string
- * of type IDXXX, X in {0,1,...9} and addr on file is the address on the input file
- * where you'll find the record corresponding to the given primary key. The vector
- * is sorted according to the primary key
+ *
+ * returns two things:
+ * a) a vector of tuple<string, int, int> sorted according to the fist string (supposed the primary key)
+ * the first int is the address of the byte where to locate the record inside lista1.txt. The second is the index of
+ * the line inside the primary index where you find a user of the same name of this user. -1 if there is no next user.
+ * b) a map of 'name' -> index of the line in the primary index file for lista1.txt where you locate a reference to the
+ * first user with named 'name'
  *
  * The input file is taken to have records with fields of fixed length.
  * It is assumed one record per line.
  */
 pair<PrimaryIndex, SecondaryIndex> buildPrimaryAndSecondaryIndexForFixedLengthFieldsFile(string filename);
 
-/**
- * Build a secondary index implemented as linked lists for a fixed a file with
- * one record per line, each record with fixed length fields. We build the index
- * for the field 'name' which is assumed to be the third field inside the record.
- */
-vector<pair<string, int>> buildSecondaryIndexForFixedLengthFieldsFile(string filename);
 
 /**
  * returns vector of entries <primaryKey, addr on file> where primary key is a string
@@ -80,5 +77,15 @@ void createSortedIndexesForFiles(string file0, string file1, string file2);
  * map.rbegin()
  */
 map<string, int> loadIndex(string file);
+
+typedef tuple<int, int> StudentRecordPrimaryIndexValue;
+
+typedef map<string, StudentRecordPrimaryIndexValue> StudentRecordPrimaryIndex;
+typedef map<string, int> StudentRecordSecondaryIndex;
+typedef map<string, int> ClassGradesIndex;
+
+StudentRecordPrimaryIndex loadStudentRecordPrimaryIndex(fstream &is, int *qtdDeleted);
+StudentRecordSecondaryIndex loadStudentRecordSecondaryIndex(fstream &is);
+ClassGradesIndex loadClassGrades(ifstream &is);
 
 #endif //GRADERECORDSYSTEM_CREATEINDEXTOOLS_H
