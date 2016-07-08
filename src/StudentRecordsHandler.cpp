@@ -375,6 +375,12 @@ void StudentRecordsHandler::printReport() {
 
 void StudentRecordsHandler::printReportOnThisName(string name) {
 
+    //name must have 23 letters
+
+    while (name.length() < 23) {
+        name += " ";
+    }
+
     //locate all primary keys with this name
     // list of primarykey, line on data file
     vector<pair<string, int>> selectedKeys;
@@ -388,17 +394,17 @@ void StudentRecordsHandler::printReportOnThisName(string name) {
 
     stringstream ss;
 
+    filePrimaryIndex.clear();
 
+    string primaryKey, buffer;
+    int lineAddrOnDataFile;
+    int lineOfNext;
     while (lineAddr != -1) {
 
         filePrimaryIndex.seekLine(lineAddr + 1);
 
-        string primaryKey, buffer;
-        int lineAddrOnDataFile;
-        int lineOfNext;
-        //read
-
         getline(filePrimaryIndex.ifs, buffer);
+        ss.clear();
         ss.str(buffer);
 
         ss >> primaryKey >> lineAddrOnDataFile >> lineOfNext;
@@ -443,6 +449,7 @@ void StudentRecordsHandler::printReportOnThisName(string name) {
 
         cout << "---------------" << endl;
         cout << "nome:" << student.name << endl;
+        cout << "primary key:" << student.primaryKey << endl;
         cout << "matricula:" << matricula << endl;
         cout << "operacao:" << student.v3 << endl;
         cout << "curso:" << student.v4 << endl;
@@ -452,7 +459,6 @@ void StudentRecordsHandler::printReportOnThisName(string name) {
         cout << "---------------" << endl;
 
     }
-
 
 
 }

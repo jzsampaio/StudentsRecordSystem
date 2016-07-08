@@ -96,6 +96,8 @@ int main() {
                 cout << "Entre com o nome do aluno a ser procurado:" << endl;
                 cin >> name;
 
+                studentRecords.printReportOnThisName(name);
+
                 break;
 
             }
