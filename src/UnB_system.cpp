@@ -65,10 +65,10 @@ int main() {
                 break;
 
             }
-            case 3 :
+            case 3 : {
                 string primaryKey;
                 int option;
-                float grad;
+                string grad;
 
                 cout << "Entre com a chave primária associada ao aluno:" << endl;
                 cin >> primaryKey;
@@ -80,17 +80,27 @@ int main() {
                 cin >> grad;
 
                 if (studentRecords.hasStudent(primaryKey)) {
-
+                    studentRecords.addNota(primaryKey, option, grad);
                 } else {
-                    cout << "Student is not in the system!" << endl;
+                    cout << "\t-------Error: Student is not in the system!-------" << endl;
                 }
 
+
                 break;
+
+            }
             case 4 :
+                studentRecords.printReport();
+            case 5 :{
+                string name;
+                cout << "Entre com o nome do aluno a ser procurado:" << endl;
+                cin >> name;
+
                 break;
-            case 5 :
-                break;
+
+            }
             case 6 :
+
                 cout << "Fim da execucao" << endl;
                 shouldFinish = true;
         }

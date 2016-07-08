@@ -7,7 +7,8 @@
 
 StudentRecordsHandler::StudentRecordsHandler(string filename, string filenameIndex, string filenameSecondaryIndex,
                                              string filenameGradesA,
-                                             string filenameGradesB, string filenameIndexGradeA, string filenameIndexGradeB)
+                                             string filenameGradesB, string filenameIndexGradeA,
+                                             string filenameIndexGradeB)
         : fileStudentRecords(filename),
           filePrimaryIndex(filenameIndex),
           fileSecondaryIndex(filenameSecondaryIndex),
@@ -223,8 +224,8 @@ void StudentRecordsHandler::reloadIndexes() {
 
     inMemoryPrimaryIndex = loadStudentRecordPrimaryIndex(filePrimaryIndex.ifs, &qtdDeleted);
     inMemorySecondaryIndex = loadStudentRecordSecondaryIndex(fileSecondaryIndex.ifs);
-    inMemoryClassAIndex = loadStudentRecordSecondaryIndex(fileIndexGradeA.ifs);
-    inMemoryClassAIndex = loadStudentRecordSecondaryIndex(fileIndexGradeB.ifs);
+    inMemoryClassAIndex = loadStudentRecordSecondaryIndexTypeB(fileIndexGradeA.ifs);
+    inMemoryClassBIndex = loadStudentRecordSecondaryIndexTypeB(fileIndexGradeB.ifs);
 
 }
 
@@ -262,8 +263,8 @@ void StudentRecordsHandler::addNota(string primaryKey, int classOpt, string grad
             return;
     }
 
-    if(relevantIndex->find(primaryKey) == relevantIndex->end()){
-        //case of a new student in that class
+    if (relevantIndex->find(primaryKey) != relevantIndex->end()) {
+        //case of a student that is having its grade updated
 
         //find address of grade record on file
         int lineAddr = (*relevantIndex)[primaryKey];
@@ -276,17 +277,182 @@ void StudentRecordsHandler::addNota(string primaryKey, int classOpt, string grad
         StudentRecordUtil::writeGrade(relevantFile->ifs, currentRecord);
 
 
-    }else{
-        //case of a student that is having its grade updated
+    } else {
+        //case of a new student in that class
+
+
+        //retrieve number and name of student
+        //at this point we assume the student exists
+
+        //retrieve studen record
+
+        fileStudentRecords.reOpen();
+        int lineAddr = get<0>(inMemoryPrimaryIndex[primaryKey]);
+        fileStudentRecords.seekLine(lineAddr);
+
+        StudentRecord studentRecord = StudentRecordUtil::readStudentRecord(fileStudentRecords.ifs);
+
+        string number = studentRecord.v1;
+        string name = studentRecord.name;
+
+        StudentGradeRecord newEntry(primaryKey, number, name, grade);
 
         //add line (the following call already positions stream at end of file
         relevantFile->addLine();
 
-        //retrieve number and nuame of student
-        //at this point we assume the student exists
+        StudentRecordUtil::writeGrade(relevantFile->ifs, newEntry);
 
 
     }
+
+
+}
+
+void StudentRecordsHandler::printReport() {
+
+    fileStudentRecords.reOpen();
+    fileGradesA.reOpen();
+    fileGradesB.reOpen();
+    for (auto e : inMemoryPrimaryIndex) {
+        cout << "----------------------------------------" << endl;
+        string primaryKey = e.first;
+        int lineAddrOnDataFile = get<0>(e.second);
+
+        fileStudentRecords.seekLine(lineAddrOnDataFile);
+
+        StudentRecord r = StudentRecordUtil::readStudentRecord(fileStudentRecords.ifs);
+
+        string primaryKeyOnRecordFile = r.primaryKey;
+        if (primaryKey != primaryKeyOnRecordFile)
+            cout << "ERROR: keys diverge! Fix me untill you see no longer this msg!" << endl;
+        string matricula = r.v1;
+        string name = r.name;
+        string operacao = r.v3;
+        string curso = r.v4;
+        string turma = r.v5;
+
+        cout << "<" << matricula << " " << name << " " << operacao << " " << curso << " " << turma << ">" << endl;
+        cout << "Computacao Quantica Avancada III:";
+
+        if (inMemoryClassAIndex.find(primaryKey) != inMemoryClassAIndex.end()) {
+            lineAddrOnDataFile = inMemoryClassAIndex[primaryKey];
+            fileGradesA.seekLine(lineAddrOnDataFile);
+
+            StudentGradeRecord gradeRec = StudentRecordUtil::readGradeRecord(fileGradesA.ifs);
+
+            if (gradeRec.primaryKey != primaryKey) {
+                cout << endl << "ERROR: keys diverge! Fix me untill you see no longer this msg! expected:" <<
+                primaryKey << "| got:" << gradeRec.primaryKey << endl;
+            }
+            if (gradeRec.v1 != matricula) {
+                cout << endl << "ERROR: matricula diverge! Fix me untill you see no longer this msg!" << endl;
+            }
+
+            cout << gradeRec.grade << endl;
+
+        } else {
+            cout << "SR" << endl;
+        }
+
+        cout << "Modelagem Aeroespacial Aliegina II:";
+
+        if (inMemoryClassBIndex.find(primaryKey) != inMemoryClassBIndex.end()) {
+            lineAddrOnDataFile = inMemoryClassBIndex[primaryKey];
+            fileGradesB.seekLine(lineAddrOnDataFile);
+
+            StudentGradeRecord gradeRec = StudentRecordUtil::readGradeRecord(fileGradesB.ifs);
+
+            cout << gradeRec.grade << endl;
+
+        } else {
+            cout << "SR" << endl;
+        }
+
+
+    }
+
+}
+
+void StudentRecordsHandler::printReportOnThisName(string name) {
+
+    //locate all primary keys with this name
+    // list of primarykey, line on data file
+    vector<pair<string, int>> selectedKeys;
+
+    if (inMemorySecondaryIndex.find(name) == inMemorySecondaryIndex.end()) {
+        cout << "No student with this name!" << endl;
+        return;
+    }
+
+    int lineAddr = inMemorySecondaryIndex[name];
+
+    stringstream ss;
+
+
+    while (lineAddr != -1) {
+
+        filePrimaryIndex.seekLine(lineAddr + 1);
+
+        string primaryKey, buffer;
+        int lineAddrOnDataFile;
+        int lineOfNext;
+        //read
+
+        getline(filePrimaryIndex.ifs, buffer);
+        ss.str(buffer);
+
+        ss >> primaryKey >> lineAddrOnDataFile >> lineOfNext;
+
+        selectedKeys.push_back(make_pair(primaryKey, lineAddrOnDataFile));
+
+        lineAddr = lineOfNext;
+    }
+
+    //now we locate the grades for every one of those students
+
+    for (auto e : selectedKeys) {
+        string key = e.first;
+        int lineAddrOnDataFile = e.second;
+
+        //load student record
+        fileStudentRecords.seekLine(lineAddrOnDataFile);
+        StudentRecord student = StudentRecordUtil::readStudentRecord(fileStudentRecords.ifs);
+        string matricula = student.v1;
+        string notaA, notaB;
+
+        if (inMemoryClassAIndex.find(key) == inMemoryClassAIndex.end()) {
+            notaA = "SR";
+        } else {
+            lineAddrOnDataFile = inMemoryClassAIndex[key];
+            fileGradesA.seekLine(lineAddrOnDataFile);
+            StudentGradeRecord gradeRec = StudentRecordUtil::readGradeRecord(fileGradesA.ifs);
+
+            notaA = gradeRec.grade;
+        }
+
+        if (inMemoryClassBIndex.find(key) == inMemoryClassBIndex.end()) {
+            notaB = "SR";
+        } else {
+            lineAddrOnDataFile = inMemoryClassBIndex[key];
+            fileGradesB.seekLine(lineAddrOnDataFile);
+            StudentGradeRecord gradeRec = StudentRecordUtil::readGradeRecord(fileGradesB.ifs);
+
+            notaB = gradeRec.grade;
+        }
+
+
+        cout << "---------------" << endl;
+        cout << "nome:" << student.name << endl;
+        cout << "matricula:" << matricula << endl;
+        cout << "operacao:" << student.v3 << endl;
+        cout << "curso:" << student.v4 << endl;
+        cout << "turma:" << student.v5 << endl;
+        cout << "\t Computacao Quantica Avancada III: " << notaA << endl;
+        cout << "\t Modelagem Aeroespacial Alienigina II:: " << notaB << endl;
+        cout << "---------------" << endl;
+
+    }
+
 
 
 }

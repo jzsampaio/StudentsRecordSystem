@@ -451,6 +451,38 @@ StudentRecordSecondaryIndex loadStudentRecordSecondaryIndex(fstream &is) {
 
     return out;
 }
+StudentRecordSecondaryIndex loadStudentRecordSecondaryIndexTypeB(fstream &is) {
+    map<string, int> out;
+    string lineBuffer;
+    stringstream lineStream;
+    string primaryKey;
+    int lineAddressOnFile;
+
+
+    if (!is.is_open()) {
+        cerr << "Could not open file:" << is << " to load secondary name index from" << endl;
+        return out;
+    }
+    if (!is.good()) {
+        is.clear();
+        is.seekg(0);
+    }
+
+    char primaryKeyBuffer[10];
+    while (getline(is, lineBuffer)) {
+        sscanf(lineBuffer.c_str(), "%5c\t%d*[\r\n]", primaryKeyBuffer, &lineAddressOnFile);
+        primaryKey = string(primaryKeyBuffer);
+
+        if (out.find(primaryKey) != out.end()) {
+            cerr << "Error on index! Multiple definition of same key:" << primaryKey << " while loading secondary index!" <<
+            endl;
+        }
+
+        out.insert(make_pair(primaryKey, lineAddressOnFile));
+    }
+
+    return out;
+}
 
 ClassGradesIndex loadClassGrades(ifstream &is) {
     map<string, int> out;

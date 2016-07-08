@@ -86,6 +86,8 @@ typedef map<string, int> ClassGradesIndex;
 
 StudentRecordPrimaryIndex loadStudentRecordPrimaryIndex(fstream &is, int *qtdDeleted);
 StudentRecordSecondaryIndex loadStudentRecordSecondaryIndex(fstream &is);
+//same as above but for index_lista 2 and 3
+StudentRecordSecondaryIndex loadStudentRecordSecondaryIndexTypeB(fstream &is);
 ClassGradesIndex loadClassGrades(ifstream &is);
 
 #endif //GRADERECORDSYSTEM_CREATEINDEXTOOLS_H

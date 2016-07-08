@@ -189,7 +189,9 @@ void StudentRecordUtil::writeStudent(fstream &fout, const StudentRecord &record,
 }
 
 StudentGradeRecord StudentRecordUtil::readGradeRecord(fstream &stream) {
+    stream.clear();
     stream.seekg(stream.tellg(), ios_base::beg);
+    stream.clear();
 
     string lineBuffer;
 
@@ -202,7 +204,7 @@ StudentGradeRecord StudentRecordUtil::readGradeRecord(fstream &stream) {
     getline(lineStream, v0, '|');
     getline(lineStream, v1, '|');
     getline(lineStream, v2, '|');
-    getline(lineStream, v3);
+    getline(lineStream, v3, '\r');
 
     return StudentGradeRecord(v0, v1, v2, v3);
 }

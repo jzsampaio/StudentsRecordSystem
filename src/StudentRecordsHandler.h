@@ -56,6 +56,10 @@ public:
 
     void addNota(string primaryKey, int classOpt, string grade);
 
+    void printReport();
+
+    void printReportOnThisName(string name);
+
 
 
 private:
