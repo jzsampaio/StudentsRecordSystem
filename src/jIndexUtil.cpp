@@ -39,20 +39,12 @@ map<int, int> buildLineByteAddrMap(fstream &ifs, int *qtdLines) {
 }
 
 LineMappedFile::LineMappedFile(string filename) {
-    this->filename = filename;
-
-    ifs.open(filename);
-
-    if (!ifs.is_open()) {
-        cerr << "could not open file:" << filename << endl;
-    }
-
-    lineByteAddrMap = buildLineByteAddrMap(ifs, &qtdLines);
+    construct(filename);
 
 }
 
 void LineMappedFile::seekLine(int idx) {
-    if(!ifs.good()){
+    if (!ifs.good()) {
         ifs.clear();
         ifs.seekg(0);
     }
@@ -116,5 +108,123 @@ string getNextPrimaryKey(const string &in) {
 
 void LineMappedFile::clear() {
     ifs.clear();
+
+}
+
+void LineMappedFile::removeLinesWithThesePrimaryKeys(set<string> deadKeys) {
+
+    string filenameTmp = "tmp" + filename;
+
+    fstream tmpFileStream;
+
+    //erase tmp file
+    tmpFileStream.open(filenameTmp, ios_base::out | ios_base::in | ios_base::trunc);
+    if (!tmpFileStream.is_open()) {
+        cerr << "could not open temporary file:" << filenameTmp << endl;
+    }
+    tmpFileStream.seekg(0);
+
+    if (ifs.is_open()) {
+        ifs.close();
+    }
+
+    ifs.open(filename, ios_base::in | ios_base::out);
+
+    ifs.seekg(0);
+
+
+    string buffer;
+    char primaryKeyBuffer[10];
+    string keyOnCurrentLine;
+
+    int deleted = 0;
+    //read original file and copy to tmp file only what is not filtered
+    while (getline(ifs, buffer)) {
+
+        sscanf(buffer.c_str(), "%5c", primaryKeyBuffer);
+        primaryKeyBuffer[5] = 0;
+        keyOnCurrentLine = string(primaryKeyBuffer);
+
+        if (deadKeys.find(keyOnCurrentLine) != deadKeys.end()) {
+            //case current line is supposed to be eliminated
+            deleted ++;
+
+
+        } else {
+            //case current line is not supposed to be eliminated
+
+            //copy to tmp file
+            tmpFileStream.write(buffer.c_str(), buffer.length());
+            tmpFileStream << endl;
+        }
+
+    }
+
+    //erase original file
+    ifs.close();
+    ifs.open(filename, ios_base::out | ios_base::trunc);
+
+    //copy tmp to original file
+    tmpFileStream.seekg(0);
+    tmpFileStream.clear();
+    while(getline(tmpFileStream, buffer)){
+        ifs.write(buffer.c_str(), buffer.length());
+        ifs << endl;
+
+    }
+
+    tmpFileStream.close();
+
+    ifs.close();
+
+}
+
+void LineMappedFile::flush() {
+    if(ifs.is_open()){
+        ifs.flush();
+    }
+
+}
+
+void LineMappedFile::construct(string filename) {
+    this->filename = filename;
+
+    ifs.open(filename);
+
+    if (!ifs.is_open()) {
+        cerr << "could not open file:" << filename << endl;
+    }
+
+    lineByteAddrMap = buildLineByteAddrMap(ifs, &qtdLines);
+
+}
+
+void LineMappedFile::reset() {
+    construct(filename);
+
+}
+
+void LineMappedFile::closeFile() {
+    if(ifs.is_open())
+        ifs.close();
+
+}
+
+void LineMappedFile::reOpen() {
+    closeFile();
+    ifs.open(filename);
+    lineByteAddrMap = buildLineByteAddrMap(ifs, &qtdLines);
+}
+
+void LineMappedFile::addLine() {
+    ifs.clear();
+
+    ifs.seekg(0, ios_base::end);
+
+    lineByteAddrMap[qtdLines++] = (int)ifs.tellg();
+
+    ifs.clear();
+
+
 
 }

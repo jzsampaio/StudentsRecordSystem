@@ -1,7 +1,0 @@
-ID004 024312 Isabela                 34    G         AB
-ID005 042780 Juarez                  34    G         AX
-ID002 042290 Bruno                   34    G         AX
-ID001 031272 Juarez                  34    G         AB
-ID003 042780 Juarez                  34    G         AX
-ID007 042780 Ataias                  34    G         AX
-ID006 042780 Juarez                  34    G         AX

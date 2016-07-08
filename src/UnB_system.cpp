@@ -3,7 +3,6 @@
 //
 
 #include<iostream>
-#include "jIndexUtil.h"
 #include "StudentRecordsHandler.h"
 
 using namespace std;
@@ -27,20 +26,13 @@ int main() {
     bool shouldFinish;
     string studentCode, studentName, studentAge;
 
-    LineMappedFile fileClassA(file2);
-    LineMappedFile fileClassB(file3);
-
-    LineMappedFile fileClassAPrimaryIndex(primaryIndexFile2);
-    LineMappedFile fileClassBPrimaryIndex(primaryIndexFile3);
-
-    StudentRecordsHandler studentRecords(file1, primaryIndexFile1, secondaryIndexFile1);
-
-    cout << "last key:" << findLastPrimaryKey(studentRecords.filePrimaryIndex) << endl;
-    cout << "next key:" << getNextPrimaryKey(findLastPrimaryKey(studentRecords.filePrimaryIndex)) << endl;
-
-    studentRecords.printPrimaryIndex();
-
-    studentRecords.printSecondaryIndex();
+    StudentRecordsHandler studentRecords(file1,
+                                         primaryIndexFile1,
+                                         secondaryIndexFile1,
+                                         file2,
+                                         file3,
+                                         primaryIndexFile2,
+                                         primaryIndexFile3);
 
 
     while (!shouldFinish) {
@@ -50,7 +42,7 @@ int main() {
         cin >> option;
 
         switch (option) {
-            case 1 :
+            case 1 : {
                 cout << "Entre com os dados do aluno: int, string, int , string, string :" << endl;
                 int d, d2;
                 string name, str1, str2;
@@ -62,9 +54,37 @@ int main() {
 
                 studentRecords.addStudent(d, name, d2, str1, str2);
                 break;
-            case 2 :
+            }
+            case 2 : {
+                cout << "Entre com a chave primária associada ao aluno:" << endl;
+                string primaryKey;
+                cin >> primaryKey;
+
+                studentRecords.removeStudent(primaryKey);
+
                 break;
+
+            }
             case 3 :
+                string primaryKey;
+                int option;
+                float grad;
+
+                cout << "Entre com a chave primária associada ao aluno:" << endl;
+                cin >> primaryKey;
+
+                cout << "Entre com a dicsiplina (1 ou 2):" << endl;
+                cin >> option;
+
+                cout << "Entre com a nota do aluno:" << endl;
+                cin >> grad;
+
+                if (studentRecords.hasStudent(primaryKey)) {
+
+                } else {
+                    cout << "Student is not in the system!" << endl;
+                }
+
                 break;
             case 4 :
                 break;

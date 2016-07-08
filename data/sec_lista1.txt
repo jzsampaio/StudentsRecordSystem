@@ -1,24 +1,21 @@
-Alberto                	48
-Ana Luisa              	28
-Ana Paula              	46
-Andreza                	26
-Bruno                  	29
-Carlos                 	47
-Clarice                	44
-Daniel                 	30
-Danilo                 	31
-Erika                  	2
-Fabricio               	32
-Igor                   	33
-Juarez                 	52
-Leonardo               	25
-Lisa                   	43
-Lucas                  	45
-Marcio                 	34
-Nolberto               	49
-Paulo                  	42
-Rodrigo                	35
-Rogerio                	27
-Thiago                 	36
-Tiago                  	38
-Vitor                  	41
+Alberto                	19
+Ana Luisa              	25
+Ana Paula              	18
+Andreza                	23
+Bruno                  	26
+Carlos                 	21
+Clarice                	41
+Daniel                 	27
+Danilo                 	28
+Fabricio               	29
+Igor                   	30
+Leonardo               	22
+Lisa                   	40
+Lucas                  	20
+Marcio                 	31
+Paulo                  	39
+Rodrigo                	32
+Rogerio                	24
+Thiago                 	33
+Tiago                  	35
+Vitor                  	38

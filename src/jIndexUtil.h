@@ -7,6 +7,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 #include <iostream>
 #include <fstream>
 
@@ -41,6 +42,10 @@ public:
 
     LineMappedFile(string filename);
 
+    void construct(string filename);
+
+    void reset();
+
     void seekLine(int idx);
 
     void printLineByteMap();
@@ -48,6 +53,21 @@ public:
     string readLastLine();
 
     void clear();
+
+    void closeFile();
+
+    void reOpen();
+
+    /**
+     * removal is made by copying to a temporary file only non eliminated records, then erasing
+     * original file, and copying back from temporary file to original file.
+     *
+     */
+    void removeLinesWithThesePrimaryKeys(set<string> deadKeys);
+
+    void flush();
+
+    void addLine();
 
 };
 
